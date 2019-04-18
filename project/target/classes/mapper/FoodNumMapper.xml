@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caipu.mapper.FoodNumMapper">
+  <resultMap id="BaseResultMap" type="com.caipu.entity.FoodNum">
+    <id column="fid" jdbcType="INTEGER" property="fid" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="dishid" jdbcType="INTEGER" property="dishid" />
+  </resultMap>
+  <resultMap id="WithDishResultMap" type="com.caipu.entity.FoodNum">
+    <id column="fid" jdbcType="INTEGER" property="fid" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="dishid" jdbcType="INTEGER" property="dishid" />
+    <association property="dishName" javaType="com.caipu.entity.DishName">
+      <id column="id" jdbcType="INTEGER" property="id"/>
+      <result column="user" jdbcType="VARCHAR" property="user"/>
+      <result column="name" jdbcType="VARCHAR" property="name"/>
+      <result column="img" jdbcType="VARCHAR" property="img"/>
+      <result column="introduction" jdbcType="VARCHAR" property="introduction"/>
+      <result column="ingredients" jdbcType="VARCHAR" property="ingredients"/>
+      <result column="practices" jdbcType="VARCHAR" property="practices"/>
+      <result column="type" jdbcType="VARCHAR" property="type"/>
+    </association>
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    fid, number, dishid
+  </sql>
+  <sql id="WithDish_Column_List">
+      fid, number, dishid, id, user, name, img, introduction, ingredients, practices, type
+  </sql>
+  <select id="selectByExampleWithDish" parameterType="com.caipu.entity.FoodNumExample" resultMap="WithDishResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="WithDish_Column_List" />
+    from food_num f left join dish_name d on f.dishid = d.id
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.caipu.entity.FoodNumExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from food_num
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from food_num
+    where fid = #{fid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from food_num
+    where fid = #{fid,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.caipu.entity.FoodNumExample">
+    delete from food_num
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.caipu.entity.FoodNum">
+    insert into food_num (fid, number, dishid
+      )
+    values (#{fid,jdbcType=INTEGER}, #{number,jdbcType=INTEGER}, #{dishid,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.caipu.entity.FoodNum">
+    insert into food_num
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fid != null">
+        fid,
+      </if>
+      <if test="number != null">
+        number,
+      </if>
+      <if test="dishid != null">
+        dishid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fid != null">
+        #{fid,jdbcType=INTEGER},
+      </if>
+      <if test="number != null">
+        #{number,jdbcType=INTEGER},
+      </if>
+      <if test="dishid != null">
+        #{dishid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.caipu.entity.FoodNumExample" resultType="java.lang.Long">
+    select count(*) from food_num
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update food_num
+    <set>
+      <if test="record.fid != null">
+        fid = #{record.fid,jdbcType=INTEGER},
+      </if>
+      <if test="record.number != null">
+        number = #{record.number,jdbcType=INTEGER},
+      </if>
+      <if test="record.dishid != null">
+        dishid = #{record.dishid,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update food_num
+    set fid = #{record.fid,jdbcType=INTEGER},
+      number = #{record.number,jdbcType=INTEGER},
+      dishid = #{record.dishid,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.caipu.entity.FoodNum">
+    update food_num
+    <set>
+      <if test="number != null">
+        number = #{number,jdbcType=INTEGER},
+      </if>
+      <if test="dishid != null">
+        dishid = #{dishid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where fid = #{fid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.caipu.entity.FoodNum">
+    update food_num
+    set number = #{number,jdbcType=INTEGER},
+      dishid = #{dishid,jdbcType=INTEGER}
+    where fid = #{fid,jdbcType=INTEGER}
+  </update>
+  <update id="updateNum" parameterType="java.lang.Integer">
+    update food_num
+    set number = number +1
+    where dishid = #{dishid}
+  </update>
+</mapper>
